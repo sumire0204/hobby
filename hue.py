@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import requests
-import time
 import configparser
 
 # 環境変数の読み込み 
