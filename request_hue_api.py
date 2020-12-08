@@ -18,6 +18,8 @@ state = jsonData["1"]["action"]["on"]
 # stateを変更
 if state == False:
     requests.put(HUE_API + "/1/action", json = {"on":True, "bri":128, "xy":[0.48, 0.41]})
+    print("turn on")
 
 if state == True:
     requests.put(HUE_API + "/1/action", json = {"on":False})
+    print("turn off")
