@@ -2,17 +2,18 @@ import pyaudio
 import wave
 import numpy as np
 from datetime import datetime
+import subprocess
 
 # 音データフォーマット
 # chunk = 1024
-chunk = 2048
+chunk = 8192
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
 RECORD_SECONDS = 0.5
 
 # 閾値
-threshold = 0.3
+threshold = 0.2
 
 # 音の取込開始
 p = pyaudio.PyAudio()
@@ -33,12 +34,14 @@ while True:
 
     # 閾値以上の場合はファイルに保存
     if x.max() > threshold:
-        import request_hue_api
+        # import request_hue_api
+        cmd = "Python request_hue_api.py"
+        subprocess.call(cmd.split())
     
         cnt += 1
 
     # 5回検出したら終了
-    if cnt > 2:
+    if cnt > 5:
         break
 
 stream.close()
