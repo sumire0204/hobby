@@ -10,6 +10,8 @@ IP_ADDRESS = config['development']['ip_address']
 USERNAME = config['development']['username']
 
 def request2hue():
+    """ hueのstateを変更する
+    """
     # stateを取得
     HUE_API = f"http://{IP_ADDRESS}/api/{USERNAME}/groups"
     res = requests.get(HUE_API)

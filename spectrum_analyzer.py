@@ -12,7 +12,7 @@ import struct
 class PlotWindow:
     def __init__(self):
         #マイクインプット設定
-        self.CHUNK=1024            #1度に読み取る音声のデータ幅
+        self.CHUNK=1024             #1度に読み取る音声のデータ幅
         self.RATE=16000             #サンプリング周波数
         self.update_seconds=50      #更新時間[ms]
         self.audio=pyaudio.PyAudio()
@@ -38,6 +38,12 @@ class PlotWindow:
         self.timer.start(self.update_seconds)    #10msごとにupdateを呼び出し
 
     def update(self):
+        """バイナリデータを数値(int16)に変換し、正規化
+        Args:
+
+        Returns:
+            ndarray: 
+        """
         self.data=np.append(self.data,self.AudioInput())
         if len(self.data)/1024 > 10:
             self.data=self.data[1024:]
@@ -46,9 +52,13 @@ class PlotWindow:
         self.plt.plot(x=self.axis, y=self.fft_data, clear=True, pen="y")  #symbol="o", symbolPen="y", symbolBrush="b")
 
     def AudioInput(self):
+        """バイナリデータを数値(int16)に変換し、正規化
+        Args:
+
+        Returns:
+            ndarray: 
+        """
         ret=self.stream.read(self.CHUNK)    #音声の読み取り(バイナリ) CHUNKが大きいとここで時間かかる
-        #バイナリ → 数値(int16)に変換
-        #32768.0=2^16で割ってるのは正規化(絶対値を1以下にすること)
         ret=np.frombuffer(ret, dtype="int16")/32768.0
         return ret
 
