@@ -8,7 +8,7 @@ chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
-RECORD_SECONDS = 0.5
+RECORD_SECONDS = 1
 
 # 閾値
 threshold = 0.8
@@ -52,12 +52,6 @@ while True:
         out.close()
 
         print("Saved.")
-
-        cnt += 1
-
-    # 5回検出したら終了
-    if cnt > 5:
-        break
 
 stream.close()
 p.terminate()
