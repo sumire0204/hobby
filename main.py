@@ -13,7 +13,7 @@ CHANNELS = 1
 RATE = 44100
 RECORD_SECONDS = 0.5
 
-SLEEP_TIME = 1.0/100
+SLEEP_TIME = 1
 THRESHOLD= 0.5 # 閾値
 
 if __name__ == '__main__':
@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     while stream.is_active():
         # バイナリデータを取得し、ndarrayに変換、正規化
-        data = stream.read(CHUNK)
+        data = stream.read(CHUNK, exception_on_overflow = False)
         x = np.frombuffer(data, dtype="int16") / 32768.0
 
         # 閾値以上の場合はhueのAPIを叩く
