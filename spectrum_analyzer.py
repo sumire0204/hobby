@@ -36,7 +36,18 @@ class PlotWindow:
         self.timer=QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(self.update_seconds)    #10msごとにupdateを呼び出し
+    
+    def AudioInput(self):
+        """バイナリデータを数値(int16)に変換し、正規化
+        Args:
 
+        Returns:
+            ndarray: 
+        """
+        ret=self.stream.read(self.CHUNK, exception_on_overflow = False)    #音声の読み取り(バイナリ) CHUNKが大きいとここで時間かかる
+        ret=np.frombuffer(ret, dtype="int16")/32768.0
+        return ret
+    
     def update(self):
         """バイナリデータを数値(int16)に変換し、正規化
         Args:
@@ -45,22 +56,12 @@ class PlotWindow:
             ndarray: 
         """
         self.data=np.append(self.data,self.AudioInput())
-        if len(self.data)/1024 > 10:
+        if len(self.data)/1024 > 5:
             self.data=self.data[1024:]
         self.fft_data=self.FFT_AMP(self.data)
         self.axis=np.fft.fftfreq(len(self.data), d=1.0/self.RATE)
-        self.plt.plot(x=self.axis, y=self.fft_data, clear=True, pen="y")  #symbol="o", symbolPen="y", symbolBrush="b")
+        self.plt.plot(x=self.axis, y=self.fft_data, clear=True), #pen="y", symbol="o", symbolPen="y", #symbolBrush="b")
 
-    def AudioInput(self):
-        """バイナリデータを数値(int16)に変換し、正規化
-        Args:
-
-        Returns:
-            ndarray: 
-        """
-        ret=self.stream.read(self.CHUNK)    #音声の読み取り(バイナリ) CHUNKが大きいとここで時間かかる
-        ret=np.frombuffer(ret, dtype="int16")/32768.0
-        return ret
 
     def FFT_AMP(self, data):
         data=np.hamming(len(data))*data

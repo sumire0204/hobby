@@ -43,7 +43,7 @@ class PlotWindow:
         self.curve.setData(self.data)   #プロットデータを格納
 
     def AudioInput(self):
-        ret=self.stream.read(self.CHUNK)    #音声の読み取り(バイナリ)
+        ret=self.stream.read(self.CHUNK, exception_on_overflow = False)    #音声の読み取り(バイナリ)
         #バイナリ → 数値(int16)に変換
         #32768.0=2^16で割ってるのは正規化(絶対値を1以下にすること)
         ret=np.frombuffer(ret, dtype="int16")/32768.0
