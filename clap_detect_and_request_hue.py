@@ -2,18 +2,20 @@ import pyaudio
 import wave
 import numpy as np
 from datetime import datetime
-import subprocess
+import time
+import hue_controller
 
 # 音データフォーマット
-# chunk = 1024
-chunk = 8192
+CHUNK = 1024
+CHUNK = CHUNK*4
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
 RECORD_SECONDS = 0.5
+SLEEP_TIME = 1.0/100
 
 # 閾値
-threshold = 0.2
+threshold = 0.5
 
 # 音の取込開始
 p = pyaudio.PyAudio()
@@ -21,32 +23,18 @@ stream = p.open(format = FORMAT,
     channels = CHANNELS,
     rate = RATE,
     input = True,
-    frames_per_buffer = chunk
+    frames_per_buffer = CHUNK
 )
 
-cnt = 0
-
-while True:
-    # 音データの取得
-    data = stream.read(chunk)
-    # ndarrayに変換
+while stream.is_active():
+    # バイナリデータを取得し、ndarrayに変換、正規化
+    data = stream.read(CHUNK)
     x = np.frombuffer(data, dtype="int16") / 32768.0
 
-    # 閾値以上の場合はファイルに保存
+    # 閾値以上の場合はhueのAPIを叩く
     if x.max() > threshold:
-        # import request_hue_api
-        cmd = "Python request_hue_api.py"
-        subprocess.call(cmd.split())
-    
-        cnt += 1
+        hue_controller.request2hue()
+        time.sleep(SLEEP_TIME) # 連続して実行されないようにする
 
-    # 5回検出したら終了
-    if cnt > 5:
-        break
-
-stream.close()
-p.terminate()
-
-# print("!!")
-# import test
-# print("world")
+# stream.close()
+# p.terminate()
