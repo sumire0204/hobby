@@ -4,38 +4,16 @@ import numpy as np
 from datetime import datetime
 import time
 import hue_controller
+import clap_detector
 
-# 音データフォーマット
-CHUNK = 1024
-CHUNK = CHUNK*4
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-RECORD_SECONDS = 0.5
-
-SLEEP_TIME = 1
-THRESHOLD= 0.5 # 閾値
+SLEEP_TIME = 0.1
 
 if __name__ == '__main__':
 
-    # 音の取込開始
-    p = pyaudio.PyAudio()
-    stream = p.open(format = FORMAT,
-        channels = CHANNELS,
-        rate = RATE,
-        input = True,
-        frames_per_buffer = CHUNK
-    )
-
-    while stream.is_active():
-        # バイナリデータを取得し、ndarrayに変換、正規化
-        data = stream.read(CHUNK, exception_on_overflow = False)
-        x = np.frombuffer(data, dtype="int16") / 32768.0
-
-        # 閾値以上の場合はhueのAPIを叩く
-        if x.max() > THRESHOLD:
+    while True:
+        CLAP_CNT = clap_detector.clap_detector()
+        print(CLAP_CNT)
+        if CLAP_CNT == 2:
             hue_controller.request2hue()
-            time.sleep(SLEEP_TIME) # 連続して実行されないようにする
-
-    # stream.close()
-    # p.terminate()
+            continue
+        time.sleep(SLEEP_TIME) # 連続して実行されないようにする

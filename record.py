@@ -7,8 +7,9 @@ from datetime import datetime
 chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 44100
-RECORD_SECONDS = 1
+# RATE = 44100
+RATE = 4410
+RECORD_SECONDS = 0.5
 
 # 閾値
 threshold = 0.8
@@ -26,7 +27,7 @@ cnt = 0
 
 while True:
     # 音データの取得
-    data = stream.read(chunk)
+    data = stream.read(chunk exception_on_overflow = False)
     # ndarrayに変換
     x = np.frombuffer(data, dtype="int16") / 32768.0
 
@@ -39,7 +40,7 @@ while True:
         all = []
         all.append(data)
         for i in range(0, int(RATE / chunk * int(RECORD_SECONDS))):
-            data = stream.read(chunk)
+            data = stream.read(chunk, exception_on_overflow = False)
             all.append(data)
         data = b''.join(all)
 
