@@ -4,14 +4,13 @@
 import pyaudio
 import wave
 import numpy as np
-from datetime import datetime
 import time
 
 # 音データフォーマット
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 16000
+RATE = 8096
 RECORD_SECONDS = 0.5
 
 SLEEP_TIME = 1
@@ -60,6 +59,6 @@ def clap_detector():
                     i += cnt
                     continue
                 i += 1
-        stream.close()
-        p.terminate()
-        return CLAP_CNT
+            return CLAP_CNT
+        # stream.close()
+        # p.terminate()
