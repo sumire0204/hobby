@@ -10,7 +10,7 @@ SLEEP_TIME = 0.1
 CLAP_CNT = 0
 
 if __name__ == '__main__':
-    
+    print("start...")
     try:
         while True:
             while True:
@@ -20,6 +20,6 @@ if __name__ == '__main__':
                     hue_controller.request2hue()
                     time.sleep(SLEEP_TIME) # 連続して実行されないようにする
     except KeyboardInterrupt:
-        print('interrupted')
+        print('...interrupted')
 
     

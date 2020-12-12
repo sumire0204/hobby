@@ -59,6 +59,6 @@ def clap_detector():
                     i += cnt
                     continue
                 i += 1
+            stream.close()
+            p.terminate()
             return CLAP_CNT
-        # stream.close()
-        # p.terminate()
